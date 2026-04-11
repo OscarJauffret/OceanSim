@@ -34,16 +34,16 @@ Window::Window(int width, int height, const char* title) : m_width(width), m_hei
 }
 
 Window::~Window() {
-    glfwDestroyWindow(m_window);
+    glfwDestroyWindow(getHandle());
     glfwTerminate();
 }
 
 bool Window::shouldClose() {
-    return glfwWindowShouldClose(m_window);
+    return glfwGetKey(getHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS;
 }
 
 void Window::swapBuffers() {
-    glfwSwapBuffers(m_window);
+    glfwSwapBuffers(getHandle());
 }
 
 void Window::pollEvents() {

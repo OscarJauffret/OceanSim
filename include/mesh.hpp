@@ -11,7 +11,7 @@
 class Mesh {
 public:
     // The constructor generates the grid automatically
-    explicit Mesh();
+    explicit Mesh(int resolution);
     ~Mesh();
 
     // The single call to draw the entire ocean

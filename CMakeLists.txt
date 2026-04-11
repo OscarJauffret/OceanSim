@@ -20,7 +20,8 @@ add_executable(OceanSim
         src/shader.cpp
         src/window.cpp
         src/mesh.cpp
-        )
+        src/gerstnerWave.cpp
+)
 
 # 4. Link the libraries
 # On Mac, we also need to link the system's OpenGL and App frameworks

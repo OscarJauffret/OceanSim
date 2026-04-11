@@ -3,21 +3,39 @@
 //
 #include "Mesh.hpp"
 
-Mesh::Mesh() {
+Mesh::Mesh(int resolution) {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    vertices = {
-        0.5, 0.5, 0.0,   // top right
-        0.5, -0.5, 0.0,  // bottom right
-        -0.5, 0.5, 0.0,    // top left
-        -0.5, -0.5, 0.0   // bottom left
-    };
+    // 1. Generate Vertices
+    for (int i = 0; i <= resolution; i++) {
+        for (int j = 0; j <= resolution; j++) {
+            float x = (float)i / (float)resolution * 50.0f - 25.0f;
+            float z = (float)j / (float)resolution * 50.0f - 25.0f;
 
-    indices = {
-        0, 1, 2,  // first triangle
-        2, 3, 1   // second triangle
-    };
+            vertices.push_back(x);    // X
+            vertices.push_back(0.0f); // Y (Water surface)
+            vertices.push_back(z);    // Z
+        }
+    }
+
+    // 2. Generate Indices (The "Stitching")
+    for (int i = 0; i < resolution; i++) {
+        for (int j = 0; j < resolution; j++) {
+            int row1 = i * (resolution + 1) + j;
+            int row2 = (i + 1) * (resolution + 1) + j;
+
+            // Triangle 1
+            indices.push_back(row1);
+            indices.push_back(row1 + 1);
+            indices.push_back(row2);
+
+            // Triangle 2
+            indices.push_back(row1 + 1);
+            indices.push_back(row2 + 1);
+            indices.push_back(row2);
+        }
+    }
     m_indexCount = indices.size();
     setupMesh(vertices, indices);
 }

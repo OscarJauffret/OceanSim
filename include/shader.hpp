@@ -10,6 +10,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader {
     public:
@@ -18,8 +20,12 @@ class Shader {
         ~Shader();
 
         void use();
-        void setFloat(const std::string &name, float value) const;
         void del() const;
+
+        void setFloat(const std::string &name, float value) const;
+        void setMat4(const std::string &name, const glm::mat4 &mat) const;
+        void setVec2(const std::string &name, const glm::vec2 &vec) const;
+        void setWave(const std::string &name, glm::vec2 dir, float amplitude, float wavelength, float speed) const;
 };
 
 
