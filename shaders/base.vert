@@ -24,9 +24,9 @@ vec3 getGerstner(Wave w, vec3 p) {
     float a = w.amplitude;
 
     return vec3(
-    w.direction.x * (a / k) * sin(phase),
+    -w.direction.x * (a / k) * sin(phase),
     a * cos(phase),
-    w.direction.y * (a / k) * sin(phase)
+    -w.direction.y * (a / k) * sin(phase)
     );
 }
 
