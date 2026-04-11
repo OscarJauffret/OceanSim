@@ -15,6 +15,8 @@ uniform mat4 view;
 uniform mat4 projection;
 
 uniform float uTime;
+out float vHeight;
+
 vec3 getGerstner(Wave w, vec3 p) {
     float k = 2 * 3.141592 / w.wavelength;
     float phase = dot(w.direction, p.xz) * k - (uTime * w.speed);
@@ -36,6 +38,7 @@ void main() {
     for(int i = 0; i < 3; i++) {
         totalOffset += getGerstner(waves[i], p);
     }
-
-    gl_Position = projection * view * model * vec4(p + totalOffset, 1.0);
+    vec3 finalPos = p + totalOffset;
+    vHeight = finalPos.y;
+    gl_Position = projection * view * model * vec4(finalPos, 1.0);
 }
