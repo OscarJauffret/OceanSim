@@ -104,10 +104,10 @@ void Shader::setVec2(const std::string &name, const glm::vec2 &vec) const {
     glUniform2f(glGetUniformLocation(ID, name.c_str()), vec.x, vec.y);
 }
 
-void Shader::setWave(const std::string& name, glm::vec2 dir, float amplitude, float wavelength, float speed) const {
+void Shader::setWave(const std::string& name, glm::vec2 dir, float amplitude, float waveNumber, float speed) const {
     glm::vec2 unitDir = glm::normalize(dir);
     setVec2(name + ".direction", unitDir);
     setFloat(name + ".amplitude", amplitude);
-    setFloat(name + ".wavelength", wavelength);
-    setFloat(name + ".speed", speed);
+    setFloat(name + ".k", waveNumber);
+    setFloat(name + ".c", speed);
 }

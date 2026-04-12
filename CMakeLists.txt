@@ -21,6 +21,7 @@ add_executable(OceanSim
         src/window.cpp
         src/mesh.cpp
         src/gerstnerWave.cpp
+        include/oceanConfig.hpp
 )
 
 # 4. Link the libraries

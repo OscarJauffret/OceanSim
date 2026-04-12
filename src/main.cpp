@@ -7,6 +7,31 @@
 #include "shader.hpp"
 #include "window.hpp"
 #include "mesh.hpp"
+#include "oceanConfig.hpp"
+/*
+class ConfigManager {
+public:
+    OceanConfig currentConfig;
+
+    void load(const std::string& path) {
+        std::ifstream file(path);
+        nlohmann::json j;
+        file >> j;
+
+        // Direct mapping - no getters needed!
+        currentConfig.resolution = j["ocean"]["resolution"];
+        currentConfig.size = j["ocean"]["size"];
+        currentConfig.wireframe = j["ocean"]["wireframe"];
+
+        currentConfig.waves.clear();
+        for (auto& w : j["waves"]) {
+            currentConfig.waves.push_back({
+                glm::vec2(w["dir"][0], w["dir"][1]),
+                w["amp"], w["len"], w["spd"]
+            });
+        }
+    }
+};*/
 
 int main() {
     Window window(800, 600, "OceanSim");
@@ -56,15 +81,15 @@ int main() {
 
         // Wave 1: The Base Swell (Long, slow, low frequency)
         // Large wavelength, moderate amplitude, slow speed.
-        shader.setWave("waves[0]", glm::vec2(1.0f, 0.2f), 0.4f, 25.0f, 1.5f);
+        shader.setWave("waves[0]", glm::vec2(1.0f, 0.2f), 0.4f, 2 * 3.142592 / 25.0f, static_cast<float>(sqrt(1.0 / (2 * 3.142592 / 25.0f))));
 
         // Wave 2: The Secondary Chop (Moves at an angle)
         // Half the wavelength, lower amplitude, faster.
-        shader.setWave("waves[1]", glm::vec2(0.4f, 0.8f), 0.15f, 12.0f, 2.8f);
+        shader.setWave("waves[1]", glm::vec2(0.4f, 0.8f), 0.15f, 2 * 3.142592 /12.0f, static_cast<float>(sqrt(1.0 / (2 * 3.142592 / 12.0f))));
 
         // Wave 3: Surface Ripples (High frequency noise)
         // Very short wavelength, tiny amplitude, very fast.
-        shader.setWave("waves[2]", glm::vec2(-0.2f, 0.9f), 0.05f, 4.0f, 5.0f);
+        shader.setWave("waves[2]", glm::vec2(-0.2f, 0.9f), 0.05f, 2 * 3.142592 /4.0f, static_cast<float>(sqrt(1.0 / (2 * 3.142592 / 4.0f))));
 
         mesh.draw();
 

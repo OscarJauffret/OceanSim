@@ -25,7 +25,7 @@ class Shader {
         void setFloat(const std::string &name, float value) const;
         void setMat4(const std::string &name, const glm::mat4 &mat) const;
         void setVec2(const std::string &name, const glm::vec2 &vec) const;
-        void setWave(const std::string &name, glm::vec2 dir, float amplitude, float wavelength, float speed) const;
+        void setWave(const std::string &name, glm::vec2 dir, float amplitude, float waveNumber, float speed) const;
 };
 
 
