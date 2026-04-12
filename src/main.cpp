@@ -8,34 +8,52 @@
 #include "window.hpp"
 #include "mesh.hpp"
 #include "oceanConfig.hpp"
-/*
+#include "json.hpp"
+
 class ConfigManager {
 public:
-    OceanConfig currentConfig;
+    Config config;
 
     void load(const std::string& path) {
         std::ifstream file(path);
         nlohmann::json j;
         file >> j;
 
-        // Direct mapping - no getters needed!
-        currentConfig.resolution = j["ocean"]["resolution"];
-        currentConfig.size = j["ocean"]["size"];
-        currentConfig.wireframe = j["ocean"]["wireframe"];
+        config.window.width = j["window"]["width"];
+        config.window.height = j["window"]["height"];
+        config.window.title = j["window"]["title"].get<std::string>();
 
-        currentConfig.waves.clear();
+        config.ocean.resolution = j["ocean"]["resolution"];
+        config.ocean.size = j["ocean"]["size"];
+        config.ocean.wireframe = j["ocean"]["wireframe"];
+
+        config.physics.gravity = j["physics"]["gravity"];
+
+        config.shaders.vertex = j["shaders"]["vertex"];
+        config.shaders.fragment = j["shaders"]["fragment"];
+
+        config.ocean.waves.clear();
         for (auto& w : j["waves"]) {
-            currentConfig.waves.push_back({
-                glm::vec2(w["dir"][0], w["dir"][1]),
-                w["amp"], w["len"], w["spd"]
-            });
+            WaveData wave{};
+            wave.direction = glm::vec2(w["dir"][0], w["dir"][1]),
+            wave.amplitude = w["amp"];
+            wave.wavelength = w["len"];
+
+            wave.waveNumber = 2.0f * 3.14159265f / wave.wavelength;
+            wave.speed = sqrt(config.physics.gravity / wave.waveNumber);
+
+            config.ocean.waves.push_back(wave);
         }
     }
-};*/
+};
 
 int main() {
-    Window window(800, 600, "OceanSim");
-    Shader shader("../shaders/base.vert", "../shaders/base.frag");
+    ConfigManager manager;
+    manager.load("../config.json");
+    const Config& cfg = manager.config;
+
+    Window window(cfg.window.width, cfg.window.height, cfg.window.title);
+    Shader shader(cfg.shaders.vertex.c_str(), cfg.shaders.fragment.c_str());
     shader.use();
 
     // 1. Model Matrix: The "Identity" matrix (no transformation)
@@ -60,7 +78,7 @@ int main() {
         100.0f
     );
 
-    Mesh mesh(200);
+    Mesh mesh(cfg.ocean.resolution);
 
 
 
@@ -79,18 +97,11 @@ int main() {
         shader.setMat4("model", model);
         shader.setFloat("uTime", static_cast<float>(glfwGetTime()));
 
-        // Wave 1: The Base Swell (Long, slow, low frequency)
-        // Large wavelength, moderate amplitude, slow speed.
-        shader.setWave("waves[0]", glm::vec2(1.0f, 0.2f), 0.4f, 2 * 3.142592 / 25.0f, static_cast<float>(sqrt(1.0 / (2 * 3.142592 / 25.0f))));
-
-        // Wave 2: The Secondary Chop (Moves at an angle)
-        // Half the wavelength, lower amplitude, faster.
-        shader.setWave("waves[1]", glm::vec2(0.4f, 0.8f), 0.15f, 2 * 3.142592 /12.0f, static_cast<float>(sqrt(1.0 / (2 * 3.142592 / 12.0f))));
-
-        // Wave 3: Surface Ripples (High frequency noise)
-        // Very short wavelength, tiny amplitude, very fast.
-        shader.setWave("waves[2]", glm::vec2(-0.2f, 0.9f), 0.05f, 2 * 3.142592 /4.0f, static_cast<float>(sqrt(1.0 / (2 * 3.142592 / 4.0f))));
-
+        int waveIndex = 0;
+        for (auto &wave : cfg.ocean.waves) {
+            std::string baseName = "waves[" + std::to_string(waveIndex++) + "]";
+            shader.setWave(baseName, wave);
+        }
         mesh.draw();
 
         // 4. Swap buffers and poll events

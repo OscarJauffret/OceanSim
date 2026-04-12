@@ -5,7 +5,7 @@
 #include "window.hpp"
 using std::cerr, std::endl;
 
-Window::Window(int width, int height, const char* title) : m_width(width), m_height(height) {
+Window::Window(int width, int height, std::string title) : m_width(width), m_height(height) {
     if (!glfwInit()) {
         cerr << "Failed to init GLFW" << endl;
         exit(-1);
@@ -16,7 +16,7 @@ Window::Window(int width, int height, const char* title) : m_width(width), m_hei
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    m_window = glfwCreateWindow(width, height, title, NULL, NULL);
+    m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     if (!m_window) {
         cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();

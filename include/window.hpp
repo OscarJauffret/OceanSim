@@ -11,7 +11,7 @@
 
 class Window {
 public:
-    Window(int width, int height, const char* title);
+    Window(int width, int height, std::string title);
     ~Window();
 
     bool shouldClose();

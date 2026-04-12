@@ -40,4 +40,5 @@ target_link_libraries(OceanSim
 # 5. Include directories (ensures headers are found)
 target_include_directories(OceanSim PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/external
         "/opt/homebrew/include")

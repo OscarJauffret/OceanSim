@@ -1,0 +1,28 @@
+{
+  "window": {
+    "width": 800,
+    "height": 600,
+    "title": "Ocean Simulation"
+  },
+
+  "shaders": {
+    "vertex": "../shaders/base.vert",
+    "fragment": "../shaders/base.frag"
+  },
+
+  "ocean": {
+    "resolution": 128,
+    "size": 50.0,
+    "wireframe": true
+  },
+
+  "physics": {
+    "gravity": 0.5
+  },
+
+  "waves": [
+    { "dir": [1.0, 0.1], "amp": 0.4, "len": 25.0},
+    { "dir": [0.4, 0.8], "amp": 0.15, "len": 12.0},
+    { "dir": [-0.2, 0.9], "amp": 0.05, "len": 4.0}
+  ]
+}

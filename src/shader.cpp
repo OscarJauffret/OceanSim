@@ -2,7 +2,12 @@
 // Created by Oscar Jauffret on 11/04/2026.
 //
 
+#include <GL/glew.h>
 #include "shader.hpp"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <glm/gtc/type_ptr.hpp>
 
 int check_shader_compilation(unsigned int shader, const char* shaderType = "DEFAULT") {
     int success;
@@ -104,10 +109,10 @@ void Shader::setVec2(const std::string &name, const glm::vec2 &vec) const {
     glUniform2f(glGetUniformLocation(ID, name.c_str()), vec.x, vec.y);
 }
 
-void Shader::setWave(const std::string& name, glm::vec2 dir, float amplitude, float waveNumber, float speed) const {
-    glm::vec2 unitDir = glm::normalize(dir);
+void Shader::setWave(const std::string &name, const WaveData wave) const {
+    glm::vec2 unitDir = glm::normalize(wave.direction);
     setVec2(name + ".direction", unitDir);
-    setFloat(name + ".amplitude", amplitude);
-    setFloat(name + ".k", waveNumber);
-    setFloat(name + ".c", speed);
+    setFloat(name + ".amplitude", wave.amplitude);
+    setFloat(name + ".k", wave.waveNumber);
+    setFloat(name + ".c", wave.speed);
 }
