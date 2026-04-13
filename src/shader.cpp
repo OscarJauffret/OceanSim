@@ -109,10 +109,14 @@ void Shader::setVec2(const std::string &name, const glm::vec2 &vec) const {
     glUniform2f(glGetUniformLocation(ID, name.c_str()), vec.x, vec.y);
 }
 
+void Shader::setVec3(const std::string& name, const glm::vec3& vec) const {
+    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, value_ptr(vec));
+}
+
+
 void Shader::setWave(const std::string &name, const WaveData wave) const {
-    glm::vec2 unitDir = glm::normalize(wave.direction);
-    setVec2(name + ".direction", unitDir);
+    setFloat(name + ".theta", wave.theta);
     setFloat(name + ".amplitude", wave.amplitude);
     setFloat(name + ".k", wave.waveNumber);
-    setFloat(name + ".c", wave.speed);
+    setFloat(name + ".omega", wave.omega);
 }

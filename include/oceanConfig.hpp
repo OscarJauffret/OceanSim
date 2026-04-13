@@ -7,12 +7,12 @@
 #include <glm/glm.hpp>
 
 struct WaveData {
-    glm::vec2 direction;
+    float theta;
     float amplitude;
     float wavelength;
 
     float waveNumber;
-    float speed;
+    float omega;        // angular frequency (sqrt(g * k))
 };
 
 struct OceanConfig {

@@ -35,12 +35,12 @@ public:
         config.ocean.waves.clear();
         for (auto& w : j["waves"]) {
             WaveData wave{};
-            wave.direction = glm::vec2(w["dir"][0], w["dir"][1]),
+            wave.theta = w["theta"];
             wave.amplitude = w["amp"];
             wave.wavelength = w["len"];
 
             wave.waveNumber = 2.0f * 3.14159265f / wave.wavelength;
-            wave.speed = sqrt(config.physics.gravity / wave.waveNumber);
+            wave.omega = sqrt(config.physics.gravity * wave.waveNumber);
 
             config.ocean.waves.push_back(wave);
         }
@@ -83,11 +83,13 @@ int main() {
 
 
     // THE RENDER LOOP
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (cfg.ocean.wireframe) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
     while (!window.shouldClose()) {
 
         // 2. Clear the screen (The "Blank Canvas")
-        window.clear(0.2f, 0.3f, 0.3f, 1.0f);
+        window.clear(1.0f, 1.0f, 1.0f, 1.0f);
 
         // 3. Draw the Triangle
         shader.use();
@@ -96,6 +98,10 @@ int main() {
         shader.setMat4("view", view);
         shader.setMat4("model", model);
         shader.setFloat("uTime", static_cast<float>(glfwGetTime()));
+        shader.setFloat("numberOfWaves", static_cast<float>(cfg.ocean.waves.size()));
+
+        shader.setVec3("light.direction", glm::normalize(glm::vec3(0.5f, 1.0f, 0.3f)));
+        shader.setVec3("light.color", glm::vec3(1.0f, 0.9f, 0.8f)); // Warm sunlight
 
         int waveIndex = 0;
         for (auto &wave : cfg.ocean.waves) {

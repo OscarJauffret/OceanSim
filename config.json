@@ -11,9 +11,9 @@
   },
 
   "ocean": {
-    "resolution": 128,
+    "resolution": 500,
     "size": 50.0,
-    "wireframe": true
+    "wireframe": false
   },
 
   "physics": {
@@ -21,8 +21,8 @@
   },
 
   "waves": [
-    { "dir": [1.0, 0.1], "amp": 0.4, "len": 25.0},
-    { "dir": [0.4, 0.8], "amp": 0.15, "len": 12.0},
-    { "dir": [-0.2, 0.9], "amp": 0.05, "len": 4.0}
+    { "theta": 3.14, "amp": 0.4, "len": 25.0},
+    { "theta": 1.5, "amp": 0.15, "len": 12.0},
+    { "theta": 2.0, "amp": 0.05, "len": 4.0}
   ]
 }
