@@ -17,7 +17,12 @@
   },
 
   "physics": {
-    "gravity": 0.5
+    "gravity": 0.5,
+    "windDirection": 0.0,
+    "windSpeed10m": 10.0,
+    "windSpeed195m": 15.0,
+    "fetch": 1000.0,
+    "windSpread": 1.5
   },
 
   "waves": [

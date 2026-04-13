@@ -9,6 +9,7 @@
 #include "mesh.hpp"
 #include "oceanConfig.hpp"
 #include "json.hpp"
+#include "oceanManager.hpp"
 
 class ConfigManager {
 public:
@@ -28,29 +29,24 @@ public:
         config.ocean.wireframe = j["ocean"]["wireframe"];
 
         config.physics.gravity = j["physics"]["gravity"];
+        config.physics.fetch = j["physics"]["fetch"];
+        config.physics.windDirection = j["physics"]["windDirection"];
+        config.physics.windSpread = j["physics"]["windSpread"];
+        config.physics.windSpeed10m = j["physics"]["windSpeed10m"];
+        config.physics.windSpeed195m = j["physics"]["windSpeed195m"];
 
         config.shaders.vertex = j["shaders"]["vertex"];
         config.shaders.fragment = j["shaders"]["fragment"];
-
-        config.ocean.waves.clear();
-        for (auto& w : j["waves"]) {
-            WaveData wave{};
-            wave.theta = w["theta"];
-            wave.amplitude = w["amp"];
-            wave.wavelength = w["len"];
-
-            wave.waveNumber = 2.0f * 3.14159265f / wave.wavelength;
-            wave.omega = sqrt(config.physics.gravity * wave.waveNumber);
-
-            config.ocean.waves.push_back(wave);
-        }
     }
 };
 
 int main() {
     ConfigManager manager;
+    OceanManager oceanManager;
     manager.load("../config.json");
+
     const Config& cfg = manager.config;
+    oceanManager.generateOcean(16, cfg.physics);
 
     Window window(cfg.window.width, cfg.window.height, cfg.window.title);
     Shader shader(cfg.shaders.vertex.c_str(), cfg.shaders.fragment.c_str());
@@ -98,16 +94,11 @@ int main() {
         shader.setMat4("view", view);
         shader.setMat4("model", model);
         shader.setFloat("uTime", static_cast<float>(glfwGetTime()));
-        shader.setFloat("numberOfWaves", static_cast<float>(cfg.ocean.waves.size()));
 
         shader.setVec3("light.direction", glm::normalize(glm::vec3(0.5f, 1.0f, 0.3f)));
         shader.setVec3("light.color", glm::vec3(1.0f, 0.9f, 0.8f)); // Warm sunlight
 
-        int waveIndex = 0;
-        for (auto &wave : cfg.ocean.waves) {
-            std::string baseName = "waves[" + std::to_string(waveIndex++) + "]";
-            shader.setWave(baseName, wave);
-        }
+        oceanManager.uploadToShader(shader);
         mesh.draw();
 
         // 4. Swap buffers and poll events

@@ -1,6 +1,8 @@
 #version 410 core
 layout (location = 0) in vec3 aPos;
 
+#define MAX_WAVES 16
+
 struct Wave {
     float theta;        // Angle in radians
     float amplitude;    // Height of the wave
@@ -8,7 +10,7 @@ struct Wave {
     float omega;        // Angular frequency
 };
 
-uniform Wave waves[3];
+uniform Wave waves[MAX_WAVES];
 
 uniform mat4 model;
 uniform mat4 view;
@@ -27,7 +29,9 @@ void main() {
     vec3 tangent = vec3(1.0, 0.0, 0.0);
     vec3 binormal = vec3(0.0, 0.0, 1.0);
 
-    for(int i = 0; i < numberOfWaves; i++) {
+    int activeWaves = int(clamp(numberOfWaves, 0.0, float(MAX_WAVES)));
+
+    for(int i = 0; i < activeWaves; i++) {
         Wave w = waves[i];
         vec2 waveVector = vec2(w.k * cos(w.theta), w.k* sin(w.theta)); // Unit vector in the wave direction
         float phase = (w.omega * uTime) - (dot(waveVector, p0.xz)); // Phase of the wave at position p0

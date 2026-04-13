@@ -6,7 +6,12 @@
 #define OCEANCONFIG_HPP
 #include <glm/glm.hpp>
 
-struct WaveData {
+struct Wave {
+    Wave(float theta, float omega, float amplitude, float gravity) : theta(theta), amplitude(amplitude), omega(omega) {
+        waveNumber = omega * omega / gravity;
+        wavelength = 2.0f * 3.14159265f / waveNumber;
+    }
+
     float theta;
     float amplitude;
     float wavelength;
@@ -24,9 +29,6 @@ struct OceanConfig {
     glm::vec3 deepColor;
     glm::vec3 shallowColor;
     bool wireframe;
-
-    // Simulation
-    std::vector<WaveData> waves;
 };
 
 struct Shaders {
@@ -42,6 +44,13 @@ struct WindowConfig {
 
 struct PhysicsConfig {
     float gravity;
+    float windSpeed10m;     // Wind speed 10m above the surface
+    float windSpeed195m;    // Wind speed 19.5m above the surface
+
+    float windDirection; // Theta
+    float windSpread;     // Random variation in wave direction (radians)
+
+    float fetch;         // Distance wind has traveled
 };
 
 struct Config {
