@@ -10,7 +10,14 @@
 #include "oceanConfig.hpp"
 #include "json.hpp"
 #include "oceanManager.hpp"
+#include "camera.hpp"
 
+// Global so the GLFW callback can reach it
+Camera camera(glm::vec3(0.0f, 10.0f, 15.0f));
+
+void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
+    camera.processMouse(xpos, ypos);
+}
 class ConfigManager {
 public:
     Config config;
@@ -46,65 +53,80 @@ int main() {
     manager.load("../config.json");
 
     const Config& cfg = manager.config;
-    oceanManager.generateOcean(16, cfg.physics);
+    oceanManager.generateOcean(64, cfg.physics);
 
     Window window(cfg.window.width, cfg.window.height, cfg.window.title);
+
+    // Capture mouse
+    glfwSetInputMode(window.getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window.getHandle(), mouseCallback);
+
     Shader shader(cfg.shaders.vertex.c_str(), cfg.shaders.fragment.c_str());
     shader.use();
 
-    // 1. Model Matrix: The "Identity" matrix (no transformation)
-    // This keeps the ocean at (0,0,0) with no rotation or scaling.
+
     glm::mat4 model = glm::mat4(1.0f);
-
-    // 2. View Matrix: The "Camera"
-    // Parameters: (Camera Position, Where to look, Which way is Up)
-    // We move the camera up 3 units and back 6 units to look down at the grid.
-    glm::mat4 view = glm::lookAt(
-        glm::vec3(0.0f, 10.0f, 15.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f)
-    );
-
-    // 3. Projection Matrix: Perspective
-    // Parameters: (Field of View, Aspect Ratio, Near Clip, Far Clip)
     glm::mat4 projection = glm::perspective(
         glm::radians(45.0f),
-        800.0f / 600.0f,
+        static_cast<float>(cfg.window.width) / static_cast<float>(cfg.window.height),
         0.1f,
         100.0f
     );
 
     Mesh mesh(cfg.ocean.resolution);
 
+    double lastTime = glfwGetTime();
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+    int nbFrames = 0;
 
-
-    // THE RENDER LOOP
     if (cfg.ocean.wireframe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
-    while (!window.shouldClose()) {
 
-        // 2. Clear the screen (The "Blank Canvas")
+    while (!window.shouldClose()) {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // Input
+        camera.processKeyboard(window.getHandle(), deltaTime);
+
+        // Escape to release mouse / close
+        if (glfwGetKey(window.getHandle(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window.getHandle(), true);
+
         window.clear(1.0f, 1.0f, 1.0f, 1.0f);
 
-        // 3. Draw the Triangle
         shader.use();
-
         shader.setMat4("projection", projection);
-        shader.setMat4("view", view);
+        shader.setMat4("view", camera.getViewMatrix());
         shader.setMat4("model", model);
-        shader.setFloat("uTime", static_cast<float>(glfwGetTime()));
+        shader.setFloat("uTime", currentFrame);
+        shader.setVec3("viewPos", camera.position);
 
-        shader.setVec3("light.direction", glm::normalize(glm::vec3(0.5f, 1.0f, 0.3f)));
-        shader.setVec3("light.color", glm::vec3(1.0f, 0.9f, 0.8f)); // Warm sunlight
+        shader.setVec3("light.direction", glm::normalize(glm::vec3(0.0f, 0.6f, -0.8f)));
+        shader.setVec3("light.color", glm::vec3(1.0f, 0.9f, 0.8f));
+
+        shader.setVec3("deepColor", glm::vec3(0.01f, 0.04f, 0.08f));
+        shader.setVec3("shallowColor", glm::vec3(0.0f, 0.15f, 0.15f));
 
         oceanManager.uploadToShader(shader);
         mesh.draw();
 
-        // 4. Swap buffers and poll events
         window.swapBuffers();
         window.pollEvents();
+
+        nbFrames++;
+        double now = glfwGetTime();
+        if (now - lastTime >= 1.0) {
+            std::string title = "Ocean Simulation | FPS: " + std::to_string(nbFrames);
+            glfwSetWindowTitle(window.getHandle(), title.c_str());
+            nbFrames = 0;
+            lastTime += 1.0;
+        }
     }
+
     glfwTerminate();
 
     //glfwTerminate();

@@ -1,7 +1,7 @@
 #version 410 core
 layout (location = 0) in vec3 aPos;
 
-#define MAX_WAVES 16
+#define MAX_WAVES 64
 
 struct Wave {
     float theta;        // Angle in radians

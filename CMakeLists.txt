@@ -24,6 +24,7 @@ add_executable(OceanSim
         include/oceanConfig.hpp
         src/oceanManager.cpp
         include/oceanManager.hpp
+        include/camera.hpp
 )
 
 # 4. Link the libraries

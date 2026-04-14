@@ -11,7 +11,7 @@
   },
 
   "ocean": {
-    "resolution": 500,
+    "resolution": 1024,
     "size": 50.0,
     "wireframe": false
   },
@@ -21,13 +21,7 @@
     "windDirection": 0.0,
     "windSpeed10m": 10.0,
     "windSpeed195m": 15.0,
-    "fetch": 1000.0,
+    "fetch": 100.0,
     "windSpread": 1.5
-  },
-
-  "waves": [
-    { "theta": 3.14, "amp": 0.4, "len": 25.0},
-    { "theta": 1.5, "amp": 0.15, "len": 12.0},
-    { "theta": 2.0, "amp": 0.05, "len": 4.0}
-  ]
+  }
 }
