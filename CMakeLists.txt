@@ -20,7 +20,6 @@ add_executable(OceanSim
         src/shader.cpp
         src/window.cpp
         src/mesh.cpp
-        src/gerstnerWave.cpp
         include/oceanConfig.hpp
         src/oceanManager.cpp
         include/oceanManager.hpp

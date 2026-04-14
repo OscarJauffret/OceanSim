@@ -115,8 +115,6 @@ void Shader::setVec3(const std::string& name, const glm::vec3& vec) const {
 
 
 void Shader::setWave(const std::string &name, const Wave wave) const {
-    setFloat(name + ".theta", wave.theta);
-    setFloat(name + ".amplitude", wave.amplitude);
-    setFloat(name + ".k", wave.waveNumber);
-    setFloat(name + ".omega", wave.omega);
+    glUniform4f(glGetUniformLocation(ID, name.c_str()), wave.theta, wave.amplitude, wave.waveNumber, wave.omega);
+
 }

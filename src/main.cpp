@@ -34,6 +34,7 @@ public:
         config.ocean.resolution = j["ocean"]["resolution"];
         config.ocean.size = j["ocean"]["size"];
         config.ocean.wireframe = j["ocean"]["wireframe"];
+        config.ocean.numberOfWaves = j["ocean"]["numberOfWaves"];
 
         config.physics.gravity = j["physics"]["gravity"];
         config.physics.fetch = j["physics"]["fetch"];
@@ -53,7 +54,7 @@ int main() {
     manager.load("../config.json");
 
     const Config& cfg = manager.config;
-    oceanManager.generateOcean(64, cfg.physics);
+    oceanManager.generateOcean(cfg.ocean.numberOfWaves, cfg.physics);
 
     Window window(cfg.window.width, cfg.window.height, cfg.window.title);
 

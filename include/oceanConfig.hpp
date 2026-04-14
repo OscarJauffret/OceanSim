@@ -29,6 +29,8 @@ struct OceanConfig {
     glm::vec3 deepColor;
     glm::vec3 shallowColor;
     bool wireframe;
+
+    int numberOfWaves;
 };
 
 struct Shaders {

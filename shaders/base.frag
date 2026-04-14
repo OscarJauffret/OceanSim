@@ -4,6 +4,7 @@ out vec4 FragColor;
 in float vHeight;
 in vec3 vNormal;
 in vec3 vPos;
+in float vJacobian;
 
 uniform vec3 deepColor;
 uniform vec3 shallowColor;
@@ -38,8 +39,16 @@ void main() {
     float backlit = max(dot(L, -V), 0.0);
     vec3 sssColor = vec3(0.0, 0.7, 0.5) * waveThin * backlit * 0.3;
 
+    // foam: using jacobian
+    float foldBias = 0.6;
+    float foamStrength = 5.0;
+    vec3 foamColor = vec3(0.95, 0.97, 1.0);   // very slightly cool white
+    float foam = clamp(foamStrength * (foldBias - vJacobian), 0.0, 1.0);
+
     // Final composition: fresnel splits reflection vs transmission
     vec3 finalColor = fresnel * reflectedColor + (1.0 - fresnel) * (waterColor + sssColor);
+
+    finalColor = mix(finalColor, foamColor, foam);
 
     // Simple ambient so shadows aren't pure black
     finalColor += vec3(0.01, 0.02, 0.03);

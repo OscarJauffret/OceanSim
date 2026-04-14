@@ -13,7 +13,8 @@
   "ocean": {
     "resolution": 1024,
     "size": 50.0,
-    "wireframe": false
+    "wireframe": false,
+    "numberOfWaves": 256
   },
 
   "physics": {
@@ -21,7 +22,7 @@
     "windDirection": 0.0,
     "windSpeed10m": 10.0,
     "windSpeed195m": 15.0,
-    "fetch": 100.0,
+    "fetch": 1000.0,
     "windSpread": 1.5
   }
 }
