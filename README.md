@@ -2,6 +2,9 @@
 
 Real-time ocean surface simulator written in C++20 and OpenGL 4.1. Waves are generated on the CPU from the JONSWAP directional spectrum, then displaced and shaded on the GPU using Gerstner wave superposition.
 
+## Demo
+https://github.com/user-attachments/assets/e4ea0768-8955-4d63-b4fb-74ea2764eace
+
 ## Features
 
 - **Physically-motivated wave spectrum.** Wave amplitudes and frequencies sampled from the JONSWAP spectrum using wind speed, fetch, and direction from `config.json`.
