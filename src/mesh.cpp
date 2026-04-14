@@ -3,15 +3,15 @@
 //
 #include "Mesh.hpp"
 
-Mesh::Mesh(int resolution) {
+Mesh::Mesh(int resolution, float size) {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
     // 1. Generate Vertices
     for (int i = 0; i <= resolution; i++) {
         for (int j = 0; j <= resolution; j++) {
-            float x = (float)i / (float)resolution * 50.0f - 25.0f;
-            float z = (float)j / (float)resolution * 50.0f - 25.0f;
+            float x = (float)i / (float)resolution * size - size/2.0f;
+            float z = (float)j / (float)resolution * size - size/2.0f;
 
             vertices.push_back(x);    // X
             vertices.push_back(0.0f); // Y (Water surface)

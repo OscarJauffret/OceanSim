@@ -74,7 +74,7 @@ int main() {
         100.0f
     );
 
-    Mesh mesh(cfg.ocean.resolution);
+    Mesh mesh(cfg.ocean.resolution, cfg.ocean.size);
 
     double lastTime = glfwGetTime();
     float deltaTime = 0.0f;
